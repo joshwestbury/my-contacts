@@ -7,7 +7,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 
-
 class ContactForm extends Component {
     constructor(props) {
         super(props);
@@ -18,9 +17,9 @@ class ContactForm extends Component {
                             city: '',
                             state: '',
                             zip: '',
-                            contacts: []
         }
     }
+
 
     update_state(event, key) {
         this.setState({[key]: event.target.value});
@@ -30,7 +29,7 @@ class ContactForm extends Component {
     handle_submit(event) {
         console.log('Submitted: ', this.state);
         //create a unique id for each contact using the 'uid' package.
-        let contact = {
+        let contactOnForm = {
             key: uid(),
             name: this.state.name,
             email: this.state.email,
@@ -40,10 +39,9 @@ class ContactForm extends Component {
             zip: this.state.zip,
         };
         //you cannot change the state directly so you must create a temporary array into which you can push contact
-        let tempArray = this.state.contacts;
-        tempArray.push(contact);
+
         //reset the text fields to empty when the submit button is pushed.
-        this.setState({contacts: tempArray,
+        this.setState({
                                 name: '',
                                 email: '',
                                 phone: '',
@@ -52,17 +50,19 @@ class ContactForm extends Component {
                                 state: '',
                                 zip: ''});
         event.preventDefault();
+
+        this.props.callback(contactOnForm);
+
     }
+
+
+
+
 
     //create a raised button by importing the RaisedButton component from Material-UI
     //change 'defaultvalue' to 'value'.
     //renderList is called within the <ol> and generates a list of contacts
     render() {
-        let renderList = this.state.contacts.map((c)=>{
-            return (
-                <li key={c.key}>{c.name}: {c.address}</li>
-            )
-        })
         return (
             <div>
                 <Card className="md-card">
@@ -116,14 +116,9 @@ class ContactForm extends Component {
                             <RaisedButton label="Submit" type="submit" primary={true}/>
                         </CardActions>
                     </form>
-                    <ol>
-                        {renderList}
-                    </ol>
                 </Card>
             </div>
-
         )
-
     }
 }
 
